@@ -8,7 +8,6 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 public class Client {
-
 	private Scanner in;
 	private PrintWriter out;
 	Scanner kb = new Scanner(System.in);
@@ -16,14 +15,14 @@ public class Client {
 	public boolean update() {
 		out.println(kb.nextLine());
 		String response;
-		try {
+		//try {
             response = in.nextLine();
             if (response == null || response.equals("")) {
                   System.exit(0);
               }
-        } catch (Exception ex) {
-               response = "Error: " + ex;
-        }
+        //} catch (Exception ex) {
+            //   response = "Error: " + ex;
+        //}
         System.out.println(response);
 
 		return true;

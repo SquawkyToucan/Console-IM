@@ -9,14 +9,14 @@ import java.util.Scanner;
 public class Server extends Thread {
 	Socket socket;
 	int clientNumber = 0;
-	
+
 	Server(Socket socket, int client) {
 		this.socket = socket;
 		this.clientNumber = client;
 		log("New connection with client# " + clientNumber + " at " + socket);
 	}
 
-	@SuppressWarnings("resource")
+	@SuppressWarnings({ "resource" })
 	public void run() {
 		try {
 			Scanner in = new Scanner(socket.getInputStream()); // takes messages from the client
@@ -26,13 +26,20 @@ public class Server extends Thread {
 			out.println("Enter a line with only a period to quit\n");
 			while (true) {
 				try {
-					String input = in.nextLine();
-					if (input.equals(".")) {
-						break;
-					}
-					System.out.println(input);
-					String toTheClient = niriri.nextLine();
-					out.println(toTheClient);
+					Thread t = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							receive(in);
+						}
+					});
+					Thread y = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							send(out, niriri);
+						}
+					});
+					t.start();
+					y.start();
 				} catch (Exception e) {
 					out.println("You didn't say anything...");
 				}
@@ -47,6 +54,22 @@ public class Server extends Thread {
 				log("Couldn't close a socket, what's going on?");
 			}
 			log("Connection with client# " + clientNumber + " closed");
+		}
+
+	}
+
+	public void receive(Scanner s) {
+		while (true) {
+			String input = s.nextLine();
+			System.out.println(input);
+		}
+	}
+
+	public void send(PrintWriter sender, Scanner s) {
+		System.out.println("Checking to send a message");
+		while (true) {
+			String toTheClient = s.nextLine();
+			sender.println(toTheClient);
 		}
 
 	}
