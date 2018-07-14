@@ -16,7 +16,7 @@ public class Server extends Thread {
 		log("New connection with client# " + clientNumber + " at " + socket);
 	}
 
-	@SuppressWarnings({ "resource" })
+	@SuppressWarnings({ })
 	public void run() {
 		try {
 			Scanner in = new Scanner(socket.getInputStream()); // takes messages from the client
@@ -24,18 +24,22 @@ public class Server extends Thread {
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true); // sends messages to the client
 			out.println("Hello, you are client #" + clientNumber + ".");
 			out.println("Enter a line with only a period to quit\n");
-			while (true) {
+			//while (true) {
 				try {
 					Thread t = new Thread(new Runnable() {
 						@Override
 						public void run() {
-							receive(in);
+							while(true) {
+								receive(in);
+							}
 						}
 					});
 					Thread y = new Thread(new Runnable() {
 						@Override
 						public void run() {
-							send(out, niriri);
+							while(true) {
+								send(out, niriri);
+							}
 						}
 					});
 					t.start();
@@ -44,7 +48,7 @@ public class Server extends Thread {
 					out.println("You didn't say anything...");
 				}
 
-			}
+			//}
 		} catch (IOException e) {
 			log("Error handling client# " + clientNumber + ": " + e);
 		} finally {
@@ -60,17 +64,29 @@ public class Server extends Thread {
 
 	public void receive(Scanner s) {
 		while (true) {
-			String input = s.nextLine();
-			System.out.println(input);
+			try {
+				try {
+					System.out.println(s.nextLine());
+				} catch (Exception e) {
+				}
+			} catch (IndexOutOfBoundsException e) {
+				
+			}
 		}
 	}
 
 	public void send(PrintWriter sender, Scanner s) {
-		System.out.println("Checking to send a message");
-		while (true) {
-			String toTheClient = s.nextLine();
-			sender.println(toTheClient);
-		}
+		//while (true) {
+			try {
+				while(s.hasNextLine()) {
+					String toTheClient = s.nextLine();
+					sender.println(toTheClient);
+				}
+			}
+			catch(IndexOutOfBoundsException e) {
+				
+			}
+		//}
 
 	}
 
